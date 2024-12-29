@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content1 %}
+
+<div class="row">
+    {% for blood in bloodlist %}
+      <div class="card mx-2" style="width: 25rem;">
+        <th>
+          <img src="{{ blood.Image.url }}" alt="Donor Image" />
+      </th>
+        <div class="card-body">
+          <h5>Name: {{ blood.Name }}<h5>
+          <h5>Blood_Group: {{ blood.Blood_Group }}</h5>
+          <h5>Last_Donate: {{ blood.Last_Donate }}</h5>
+          <h5>Location: {{ blood.Location }}</h5>
+          <h5>Phone: {{ blood.Phone }}</h5>
+          <h5>Email: {{ blood.Email }}</h5>
+        </div>
+      </div>
+    {% endfor %}
+</div>
+
+{% endblock content1 %}

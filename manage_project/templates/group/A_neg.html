@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content1 %}
+
+{% comment "" %}
+{% for blood in bloodlist %}
+{{blood.Name}}
+{{blood.Blood_Group}}
+{{blood.Location}}
+{{blood.Phone}}
+{{blood.Email}} <br>
+
+{% endfor %} {% endcomment %}
+
+<table class="table  table-success table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Blood Group</th>
+        <th scope="col">Last Donate</th>
+        <th scope="col">Location</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+
+
+      {% for blood in bloodlist %}
+
+        {% if blood.Blood_Group == 'A-' %}
+         <tr>
+            <th>{{ blood.Name }}</th>
+            <th>{{ blood.Blood_Group }}</th>
+            <th>{{ blood.Last_Donate }}</th>
+            <th>{{ blood.Location }}</th>
+            <th>{{ blood.Phone }}</th>
+            <th>{{ blood.Email }}</th>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+{% endblock content1 %}
