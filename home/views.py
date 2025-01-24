@@ -41,7 +41,9 @@ def see_all_request(request):
     return render(request, "see_all_request.html", {'requests':requests})
 
 def become_donor(request):
-    if request.method=="POST":   
+    error_message = None  # Initialize error message
+    if request.method == "POST":
+        # Get data from the form
         username = request.POST['username']
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
@@ -57,33 +59,64 @@ def become_donor(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
+        # Check if passwords match
         if password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-            return redirect('/signup')
+            error_message = "Passwords do not match."
+            return render(request, "become_donor.html", {"error_message": error_message})
 
+        # Check if the username already exists
+        if User.objects.filter(username=username).exists():
+            error_message = "Username already exists."
+            return render(request, "become_donor.html", {"error_message": error_message})
+
+        # Check if the email already exists
+        if User.objects.filter(email=email).exists():
+            error_message = "Email already exists."
+            return render(request, "become_donor.html", {"error_message": error_message})
+
+        # Create the user
         user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
-        donors = Donor.objects.create(donor=user, phone=phone, state=state, city=city, address=address, gender=gender, blood_group=BloodGroup.objects.get(name=blood_group), date_of_birth=date, image=image)
+
+        # Create the donor profile
+        try:
+            blood_group_instance = BloodGroup.objects.get(name=blood_group)
+        except BloodGroup.DoesNotExist:
+            error_message = "Invalid blood group."
+            return render(request, "become_donor.html", {"error_message": error_message})
+
+        donors = Donor.objects.create(donor=user, phone=phone, state=state, city=city, address=address, gender=gender, blood_group=blood_group_instance, date_of_birth=date, image=image)
+
+        # Save user and donor
         user.save()
         donors.save()
-        return render(request, "index.html")
-    return render(request, "become_donor.html")
 
+        # Redirect to the index page or a success page
+        return redirect("index")  # or use render(request, "index.html")
+    
+    return render(request, "become_donor.html", {"error_message": error_message})
 def Login(request):
     if request.user.is_authenticated:
         return redirect("/")
     else:
+        error_message = None  # Initialize error message
         if request.method == "POST":
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
+            username = request.POST.get("username")
+            password = request.POST.get("password")
 
-            if user is not None:
-                login(request, user)
-                return redirect("/profile")
+            # Check if the username exists
+            if not User.objects.filter(username=username).exists():
+                error_message = "Username does not exist."
             else:
-                thank = True
-                return render(request, "user_login.html", {"thank":thank})
-    return render(request, "login.html")
+                user = authenticate(username=username, password=password)
+
+                if user is not None:
+                    login(request, user)  # Log in the user
+                    return redirect("/profile")
+                else:
+                    error_message = "Incorrect password."
+
+        return render(request, "login.html", {"error_message": error_message})
+
 
 def Logout(request):
     logout(request)

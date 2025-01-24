@@ -4,7 +4,11 @@
 {% endblock %}
 {% block body %}
 <form method="POST"> {% csrf_token %}
+
     <div class="container mt-5">
+        {% if error_message %}
+        <p style="color: red;" class="mb-3 text-center">{{ error_message }}</p>
+    {% endif %}
         <div class="mb-3">
             <label for="username" class="form-label"><i style="font-weight: bold;">Username</i></label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
