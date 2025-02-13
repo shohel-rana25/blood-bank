@@ -103,16 +103,20 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
+
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'home/media')
 MEDIA_URL = '/media/'
 
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "home/static")
+    os.path.join(BASE_DIR, "home/static"),  # Ensure this matches the actual folder path
 ]
 

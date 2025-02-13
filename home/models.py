@@ -16,6 +16,9 @@ class RequestBlood(models.Model):
     address = models.CharField(max_length=500, blank=True)
     blood_group = models.ForeignKey(BloodGroup, on_delete=models.CASCADE)
     date = models.CharField(max_length=100, blank=True)
+    status = models.BooleanField(default=False,null=True,blank=True)
+    created_time = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
 
     def __str__(self):
         return self.name

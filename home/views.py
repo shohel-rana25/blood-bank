@@ -33,12 +33,26 @@ def request_blood(request):
         return render(request, "index.html")
     return render(request, "request_blood.html")
 
-@login_required(login_url = '/login')
+# @login_required(login_url = '/login')
+# # def see_all_request(request):
+# #     user_blood_group = request.user.donor.blood_group
+# #     requests = RequestBlood.objects.filter(blood_group=user_blood_group)
+# #     # requests = RequestBlood.objects.all()
+# #     return render(request, "see_all_request.html", {'requests':requests})
+
+
+@login_required(login_url='/login')
 def see_all_request(request):
     user_blood_group = request.user.donor.blood_group
-    requests = RequestBlood.objects.filter(blood_group=user_blood_group)
-    # requests = RequestBlood.objects.all()
-    return render(request, "see_all_request.html", {'requests':requests})
+    requests = RequestBlood.objects.filter(
+        blood_group=user_blood_group, 
+        
+        # status=False  # Only fetch requests where status=False
+    ).order_by('-created_time')  # Sort by created_time (newest first)
+
+    return render(request, "see_all_request.html", {'requests': requests})
+
+
 
 def become_donor(request):
     error_message = None  # Initialize error message
@@ -69,14 +83,13 @@ def become_donor(request):
             error_message = "Username already exists."
             return render(request, "become_donor.html", {"error_message": error_message})
 
-        # Check if the email already exists
-        if User.objects.filter(email=email).exists():
-            error_message = "Email already exists."
-            return render(request, "become_donor.html", {"error_message": error_message})
+        # # Check if the email already exists
+        # if User.objects.filter(email=email).exists():
+        #     error_message = "Email already exists."
+        #     return render(request, "become_donor.html", {"error_message": error_message})
 
         # Create the user
         user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
-
         # Create the donor profile
         try:
             blood_group_instance = BloodGroup.objects.get(name=blood_group)
@@ -120,12 +133,38 @@ def Login(request):
 
 def Logout(request):
     logout(request)
-    return redirect('/')
+    return redirect('index')
 
 @login_required(login_url = '/login')
 def profile(request):
     donor_profile = Donor.objects.get(donor=request.user)
     return render(request, "profile.html", {'donor_profile':donor_profile})
+
+
+
+# @login_required(login_url='/login')
+# def delete_profile(request, id):
+#     donor = get_object_or_404(User, id=id)  # Get the donor profile
+
+#     # Ensure the logged-in user is the owner before deleting
+#     if request.user is not: 
+#         user = request.user  # Store user reference before deleting
+#         user.delete()  # Delete the associated user account
+#         logout(request)  # Log out the user
+
+#     return redirect('index')
+
+@login_required(login_url='/login')
+def delete_profile(request, id):
+    user_to_delete = get_object_or_404(User, id=id)  # Get the user by ID
+
+    # Ensure the logged-in user is the owner before deleting
+    if request.user == user_to_delete:  
+        user_to_delete.delete()  # Delete the user account
+        logout(request)  # Log out the user
+
+    return redirect('index') 
+
 
 @login_required(login_url = '/login')
 def edit_profile(request):
@@ -165,3 +204,13 @@ def change_status(request):
         donor_profile.ready_to_donate = True
         donor_profile.save()
     return redirect('/profile')
+
+
+
+@login_required(login_url='/login')
+def request_status(request, brid):
+        request_blood = RequestBlood.objects.get(id=brid)
+        request_blood.status = not request_blood.status
+        request_blood.save()
+    
+        return redirect('/see_all_request')

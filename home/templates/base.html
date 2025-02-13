@@ -6,43 +6,49 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <title>{% block title %}{% endblock %}</title>
-    <style>
-        .navbar {
-            background-color: #cc1609;
-        }
-    </style>
+  
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <a class="navbar-brand" href="/">Blood Donation Management System by GetProjects.org</a>
+    <nav style="background-color: #FF0018;" class="navbar navbar-expand-md navbar-dark fixed-top">
+       
+        <a class="navbar-brand" href="/"><h2> <i class="fas fa-hand-holding-heart"></i> Blood Bank</h2> </a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="container w-75">
-            <div class="navbar-nav">
+            <div class="container w-75 d-flex justify-content-between">
+                <div class="navbar-nav">
+                    {% if request.user.is_authenticated %}
+                    <div class="ms-auto d-flex">
+                        <h5><a class="nav-item nav-link active" href="/profile/">  <i class="fas fa-user"></i>  Profile</a> </h5>
+                        <h5><a class="nav-item nav-link active" href="/edit_profile/"> <i class="fas fa-user-edit"></i> Edit Profile</a></h5>
+                        <h5><a class="nav-item nav-link active" href="/see_all_request/"><i class="fas fa-clipboard-list"></i>All_Request</a></h5>
+                        <h5><a class="nav-item nav-link active" href="/logout/"><i class="fas fa-sign-out-alt"></i>Logout</a></h5>
+                       
+                    </div>
+                    {% else %}
+                    <h5><a class="nav-item nav-link active" href="/"><i class="fas fa-home"></i>&nbsp; Home </a></h5>
+                    <h5><a class="nav-item nav-link active" href="/request_blood/"><i class="fas fa-user"></i>&nbsp; Patient</a></h5>
+                     <h5><a class="nav-item nav-link active" href="/see_all_request/"><i class="fas fa-clipboard-list"></i>All_Request</a></h5>
+                     <h5> <a class="nav-item nav-link active" href="/become_donor/"><i class="fas fa-user"></i>&nbsp; Donor</a></h5>
+                     <h5> <a class="nav-item nav-link active" href="/login/"> <i class="fas fa-sign-in-alt"></i> Login</a></h5>
+                    {% endif %}
+                </div>
+        
                 {% if request.user.is_authenticated %}
-                <a class="nav-item nav-link active" href="/profile/">Profile</a>
-                <a class="nav-item nav-link active" href="/edit_profile/">Edit Profile</a>
-                <a class="nav-item nav-link active" href="/see_all_request/">See All Request</a>
-                <a class="nav-item nav-link active" href="/logout/">Logout</a>
-                {% else %}
-                <a class="nav-item nav-link active" href="/">All Donors</a>
-                <a class="nav-item nav-link active" href="/request_blood/">Request For Blood</a>
-                <a class="nav-item nav-link active" href="/see_all_request/">See All Request</a>
-                <a class="nav-item nav-link active" href="/become_donor/">Register As Donor</a>
-                <a class="nav-item nav-link active" href="/login/">Login</a>
+                <h1><a href="{% url "profile"%}" class="nav-item nav-link active text-white"><h4><i class="fas fa-smile"></i> Welcome {{ request.user }}</a></h4>
                 {% endif %}
             </div>
-            {% if request.user.is_authenticated %}
-            <a href="#" class="nav-item nav-link active" style="color: white;">Welcome {{request.user}}</a>
-            {% endif %}
         </div>
-        </div>
+        
     </nav><br>
 
         {% block body %}

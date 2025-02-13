@@ -5,21 +5,24 @@
 {% endblock %}
 {% block body %}
 <div class="container">
-<h1>Available Donors According To Blood Group</h1>
-  <div class="album py-5 bg-light">
+<br></br>
+<br></br>
+
+  <div class="album py-4 bg-light">
     <div class="container">
       <div class="row">
         {% for i in all_group %}
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm border-danger">
+        <div class="col-md-3">
+          <div class="card mb-3 shadow-sm border-danger">
             <div class="card-body">
-              <h3 class="card-text">Blood Group: {{i.name}}</h3>
-              <h3 class="card-text">Total Donor: {{i.total}}</h3>
+              <h2>{{i.name}} <i class="fa-solid fa-droplet text-danger opacity-75"></i></h2>
+              <h5 class="card-text">Ready to Donate: {{i.total}}</h5>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a href="/donors_list/{{i.id}}/" class="btn btn-sm btn-outline-danger">View All Donors</a>
+                  <a href="/donors_list/{{i.id}}/" class="btn btn-sm btn-outline-danger">Donor View</a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -28,4 +31,33 @@
     </div>
   </div>
 </div>
+
+</div>
+<h3 class="text-center"><i class="fas fa-hand-holding-heart"></i> Blood Bank</h3> <br>
+<div class="xyz d-flex justify-content-center align-items-center" style="height: 10vh;">
+  <form action="#" class="form-inline" method="POST">
+      {% csrf_token %}
+      <div class="form-group mx-sm-3 mb-6">
+          <select name="bloodgroup" class="form-control">
+              <option disabled="disabled" selected="selected">Choose Blood Group</option>
+              <option>O+</option>
+              <option>O-</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+          </select>
+      </div>
+      <div class="form-group mx-sm-3 mb-6">
+          <input type="string" class="form-control" name="output" placeholder="Location">
+      </div>
+      <button type="submit" class="btn btn-primary mb-2">Search</button>
+  </form>
+</div>
+
+<h5><i class="fa-solid fa-droplet text-danger opacity-75"></i>   This a Blood Bank project </h5>
+
+
 {% endblock %}
